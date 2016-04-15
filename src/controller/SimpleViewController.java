@@ -59,8 +59,6 @@ public class SimpleViewController implements MouseListener {
         for (Feed d : feedsSet) {          
             System.out.println(d.title);
             view.setFeedText(d.id + " " + d.title, this);
-            //view.revalidate();
-            //view.repaint();
         }
     }
 
