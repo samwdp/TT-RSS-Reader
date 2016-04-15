@@ -12,6 +12,8 @@ import org.json.JSONException;
 
 import gui.LoginScreenView;
 import gui.SimpleView;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Article;
 import model.Category;
 import model.Feed;
@@ -20,48 +22,51 @@ import preferences.Constants;
 
 /**
  * Controller that deals with the logging in of the user
- * 
+ *
  * @author Sam
  *
  */
 public class LoginController implements java.awt.event.ActionListener {
 
-	private TTRSSApi loginAPI;
-	private LoginScreenView view;
+    private TTRSSApi loginAPI;
+    private LoginScreenView view;
 
-	public LoginController() {
-		loginAPI = new TTRSSApi();
-		Constants.api = loginAPI;
-		view = new LoginScreenView();
-		view.addController(this);
-	}
+    public LoginController() {
+        loginAPI = new TTRSSApi();
 
-	/**
-	 * action listener that is attatched to the button of the login screen, sets
-	 * the username, password and URL from user send information to the login
-	 * function of the API after successful login, user is sent to the screen of
-	 * choice
-	 */
-	public void actionPerformed(ActionEvent arg0) {
-		try {
-			Constants.username = view.getUsername();
-			Constants.password = view.getPassword();
-			Constants.URL = view.getURL();
-			boolean login = loginAPI.login();
-			if (login == false) {
-				view.setError("Check the criteria and try again", "Login unsuccessful");
-			} else {
-				view.hideDisplay();
-				SimpleViewController simpleViewController = new SimpleViewController();
-			}
-			// view2 = new SimpleView();
-			// getFeed(view2);
+        view = new LoginScreenView();
+        view.addController(this);
+    }
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    /**
+     * action listener that is attached to the button of the login screen, sets
+     * the username, password and URL from user send information to the login
+     * function of the API after successful login, user is sent to the screen of
+     * choice
+     */
+    public void actionPerformed(ActionEvent arg0) {
+        try {
+            Constants.username = view.getUsername();
+            Constants.password = view.getPassword();
+            Constants.URL = view.getURL();
+            boolean login = loginAPI.login();
+            if (login == false) {
+                view.setError("Check the criteria and try again", "Login unsuccessful");
+            } else {
+                Constants.api = loginAPI;
+                view.hideDisplay();
+                SimpleViewController simpleViewController = new SimpleViewController();
+            }
+            // view2 = new SimpleView();
+            // getFeed(view2);
 
-		}
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
 
-	}
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

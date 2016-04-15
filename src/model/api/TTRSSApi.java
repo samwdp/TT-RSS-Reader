@@ -26,7 +26,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 
 import model.Article;
 import model.Category;
@@ -166,12 +165,11 @@ public class TTRSSApi extends JSONObject {
                 if (!skipObject && article.id != -1 && article.title != null) {
                     articles.add(article);
                 }
-
                 count++;
             }
             reader.endArray();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return count;
     }
@@ -370,30 +368,30 @@ public class TTRSSApi extends JSONObject {
      *
      */
     public boolean login() throws UnsupportedEncodingException {
+        float time = System.currentTimeMillis();
+        String username = Constants.username;
+        String password = Constants.password;
 
-        // Just login once, check if already logged in after acquiring the lock
-        // on mSessionId
-        /*
-		 * if (sessionId != null && !lastError.equals(NOT_LOGGED_IN)) return
-		 * true;
-         */
+        if (sessionId != null && !lastError.equals(NOT_LOGGED_IN)) {
+            return true;
+        }
+
         synchronized (lock) {
-            /*
-			 * if (sessionId != null && !lastError.equals(NOT_LOGGED_IN)) return
-			 * true;
-             */
-            // Login done while we were waiting for the lock
 
+            if (sessionId != null && !lastError.equals(NOT_LOGGED_IN)) {
+                return true;
+            }
+
+            // Login done while we were waiting for the lock
             Map<String, String> params = new HashMap<>();
             params.put(PARAM_OP, VALUE_LOGIN);
-            params.put(PARAM_USER, Constants.username);
-            params.put(PARAM_PW, Constants.password);
+            params.put(PARAM_USER, username);
+            params.put(PARAM_PW, password);
 
             try {
                 sessionId = readResult(params, true, false);
                 if (sessionId != null) {
-                    // Log.d(TAG, "login: " + (System.currentTimeMillis() -
-                    // time) + "ms");
+                    System.out.println("login: " + (System.currentTimeMillis() - time) + "ms");
                     return true;
                 }
             } catch (IOException e) {
@@ -481,13 +479,14 @@ public class TTRSSApi extends JSONObject {
             if (sessionId != null) {
                 params.put(SID, sessionId);
             }
+            String userurl = Constants.URL;
 
             JSONObject json = new JSONObject(params);
             byte[] outputBytes = json.toString().getBytes("UTF-8");
 
             logRequest(json);
 
-            URL url = new URL(Constants.URL + "/api/index.php");
+            URL url = new URL(userurl + "/api/index.php");
             HttpURLConnection con = (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
             con.setDoInput(true);
             con.setDoOutput(true);
@@ -570,7 +569,7 @@ public class TTRSSApi extends JSONObject {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_OP, VALUE_GET_FEEDS);
         params.put(PARAM_CAT_ID, "-4" + ""); // Hardcoded -4 fetches all feeds.
-       
+
         JsonReader reader = null;
         try {
             reader = prepareReader(params);
@@ -648,7 +647,7 @@ public class TTRSSApi extends JSONObject {
         }
 
         final long time = System.currentTimeMillis();
-        System.out.println( "getFeeds: " + (System.currentTimeMillis() - time) + "ms");
+        System.out.println("getFeeds: " + (System.currentTimeMillis() - time) + "ms");
         return ret;
     }
 

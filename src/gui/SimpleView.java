@@ -165,10 +165,16 @@ public class SimpleView extends JFrame {
         headlineLabel.addMouseListener(controller);
     }
 
+    /**
+     * used by the controller to clear the feed panel
+     */
     public void clearFeedPanel() {
         feedPanel.removeAll();
     }
 
+     /**
+     * used by the controller to clear the headline panel
+     */
     public void clearHeadlinePanel() {
         headlinePanel.removeAll();
     }

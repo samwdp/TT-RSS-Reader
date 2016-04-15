@@ -33,7 +33,7 @@ public class SimpleViewController implements MouseListener {
     private Set<Article> articles;
     private ArticleController articleController;
     private ScheduledExecutorService executor;
-    private FeedThread f;
+    private Set<Feed> feedsSet;
 
     /**
      * Creates a new view and gets the feeds from the TT-RSS server
@@ -43,13 +43,8 @@ public class SimpleViewController implements MouseListener {
         view = new SimpleView();
         articleController = new ArticleController();
         Constants.feedAmount = 100;
-        Constants.simpleView = this;
-        try {
-            getFeed();
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
+       
 
     }
 
@@ -61,13 +56,11 @@ public class SimpleViewController implements MouseListener {
      */
     public void getFeed() throws UnsupportedEncodingException, InterruptedException {
         view.clearFeedPanel();
-        f = new FeedThread();
-        f.setDaemon(true);
-        f.start();
-        f.sleep(1000);
-        for (Feed d : Constants.feeds) {          
+        for (Feed d : feedsSet) {          
             System.out.println(d.title);
             view.setFeedText(d.id + " " + d.title, this);
+            //view.revalidate();
+            //view.repaint();
         }
     }
 
@@ -83,7 +76,7 @@ public class SimpleViewController implements MouseListener {
         if (SwingUtilities.isLeftMouseButton(e)) {
             view.clearHeadlinePanel();
             JLabel currentLabel = (JLabel) e.getComponent();
-            for (Feed f : Constants.feeds) {
+            for (Feed f : feedsSet) {
                 String string = currentLabel.getText();
                 String labelTextID = null;
                 if (string.contains(" ")) {
@@ -112,7 +105,7 @@ public class SimpleViewController implements MouseListener {
 
         if (SwingUtilities.isRightMouseButton(e)) {
             JLabel currentLabel = (JLabel) e.getComponent();
-            for (Feed f : Constants.feeds) {
+            for (Feed f : feedsSet) {
                 String string = currentLabel.getText();
                 String labelTextID = null;
                 if (string.contains(" ")) {
@@ -137,12 +130,13 @@ public class SimpleViewController implements MouseListener {
      * update thread that runs every x minutes and only runs if user defines the
      * program to be online
      */
-    private void updateTesk() {
+    private void updateTask() {
         if (Constants.isOnline) {
             Runnable getFeedTask = new Runnable() {
                 public void run() {
                     try {
                         // Invoke method(s) to do the work
+                        feedsSet = Constants.api.getFeeds();
                         getFeed();
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SimpleViewController.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,7 +145,7 @@ public class SimpleViewController implements MouseListener {
                     }
                 }
             };
-            executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateTime, TimeUnit.MINUTES);
+            executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateTime, TimeUnit.SECONDS);
         }
     }
 
@@ -178,19 +172,6 @@ public class SimpleViewController implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         // TODO Auto-generated method stub
-
-    }
-
-    private class FeedThread extends Thread {
-
-        @Override
-        public void run() {
-            try {
-                Constants.feeds = Constants.api.getFeeds();
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(SimpleViewController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
 
     }
 }
