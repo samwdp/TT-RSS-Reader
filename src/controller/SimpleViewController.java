@@ -1,8 +1,6 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
@@ -43,9 +41,7 @@ public class SimpleViewController implements MouseListener {
         view = new SimpleView();
         articleController = new ArticleController();
         Constants.feedAmount = 100;
-        
-       
-
+        updateTask();
     }
 
     /**
@@ -143,6 +139,7 @@ public class SimpleViewController implements MouseListener {
                     }
                 }
             };
+            System.out.println(Constants.updateTime);
             executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateTime, TimeUnit.SECONDS);
         }
     }

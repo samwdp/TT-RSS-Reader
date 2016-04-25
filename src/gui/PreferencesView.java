@@ -52,7 +52,7 @@ public class PreferencesView extends JFrame {
         textSizeInuptPanel = new JPanel();
         textSizeInput = new JTextField(20);
         updateFrequencyOverallPanel = new JPanel();
-        updateInformationLabel = new JLabel("Update time in minutes");
+        updateInformationLabel = new JLabel("Update time in seconds");
         updateInformationPanel = new JPanel();
         updateFrequencyLabelPanel = new JPanel();
         updateTextLabel = new JLabel("Update frequency");
@@ -91,7 +91,7 @@ public class PreferencesView extends JFrame {
         textSizeInuptPanel.add(textSizeInput);
         textSizeInput.setText(Integer.toString(Constants.fontSize));
 
-        //update frequenxy panel
+        //update frequency panel
         updateFrequencyOverallPanel.add(updateInformationLabel);
         updateFrequencyOverallPanel.add(updateInformationPanel);
         updateInformationPanel.add(updateFrequencyLabelPanel);
@@ -100,7 +100,7 @@ public class PreferencesView extends JFrame {
         //update label and input
         updateFrequencyLabelPanel.add(updateTextLabel);
         updateFrequencyInputPanel.add(updateFrequencyInput);
-        updateFrequencyInput.setText(Integer.toString(Constants.feedAmount));
+        updateFrequencyInput.setText(Float.toString(Constants.updateTime));
 
         //online panel
         onlineOverallPanel.add(onlineInformationLabel);
@@ -133,7 +133,7 @@ public class PreferencesView extends JFrame {
     /**
      * returns the integer value of the input of the text size
      *
-     * @return i: int
+     * @return i: integer
      */
     public int getTextSize() {
         int i = Integer.parseInt(textSizeInput.getText());
@@ -141,12 +141,12 @@ public class PreferencesView extends JFrame {
     }
 
     /**
-     * returns the integer value of the input of the update frequency
+     * returns the float value of the input of the update frequency
      *
-     * @return i : int
+     * @return i : float
      */
-    public int getUpdateFrequency() {
-        int i = Integer.parseInt(updateFrequencyInput.getText());
+    public long getUpdateFrequency() {
+        long i = Long.parseLong(updateFrequencyInput.getText());
         return i;
     }
 
