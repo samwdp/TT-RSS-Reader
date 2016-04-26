@@ -16,7 +16,7 @@ public class LoginScreenView extends JFrame {
 	private JButton loginBtn;
 	private JPanel output;
 	private JTextField usernameText;
-	private JTextField passwordText;
+	private JPasswordField passwordText;
 	private JTextField urlText;
 	private JLabel passwordLabel;
 	private JLabel usernameLabel;
@@ -26,7 +26,7 @@ public class LoginScreenView extends JFrame {
 		buttonPanel = new JPanel();
 		output = new JPanel();
 		usernameText = new JTextField(20);
-		passwordText = new JTextField(20);
+		passwordText = new JPasswordField(20);
 		urlText = new JTextField(30);
 		loginBtn = new JButton("Login");
 		passwordLabel = new JLabel("Password");
@@ -76,7 +76,7 @@ public class LoginScreenView extends JFrame {
 	}
 
 	/**
-	 * gets the password the user enteres
+	 * gets the password the user entered
 	 * 
 	 * @return s: String
 	 */
@@ -86,7 +86,7 @@ public class LoginScreenView extends JFrame {
 	}
 
 	/**
-	 * gets the usl the user enteres
+	 * gets the URL the user entered
 	 * 
 	 * @return s: String
 	 */
