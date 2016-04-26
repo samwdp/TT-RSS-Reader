@@ -874,7 +874,7 @@ public class TTRSSApi extends JSONObject {
         return ret;
     }
 
-    private boolean makeLazyServerWork(Integer feedId) throws UnsupportedEncodingException {
+    private boolean serverWork(Integer feedId) throws UnsupportedEncodingException {
         if (Constants.isOnline) {
             Map<String, String> taskParams = new HashMap<>();
             taskParams.put(PARAM_OP, VALUE_UPDATE_FEED);
@@ -912,7 +912,7 @@ public class TTRSSApi extends JSONObject {
             return;
         }
 
-        makeLazyServerWork(id);
+        serverWork(id);
 
         int limitParam = Math.min((apiLevel < 6) ? PARAM_LIMIT_API_5 : PARAM_LIMIT_MAX_VALUE, limit);
 

@@ -100,7 +100,7 @@ public class PreferencesView extends JFrame {
         //update label and input
         updateFrequencyLabelPanel.add(updateTextLabel);
         updateFrequencyInputPanel.add(updateFrequencyInput);
-        updateFrequencyInput.setText(Float.toString(Constants.updateTime));
+        updateFrequencyInput.setText(Float.toString(Constants.updateArticleTime));
 
         //online panel
         onlineOverallPanel.add(onlineInformationLabel);

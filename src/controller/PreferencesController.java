@@ -29,7 +29,7 @@ public class PreferencesController implements ActionListener {
         JButton b = (JButton) ae.getSource();
 
         if (b.getText() == "Submit") {
-            Constants.updateTime = view.getUpdateFrequency();
+            Constants.updateArticleTime = view.getUpdateFrequency();
             Constants.fontSize = view.getArticleAmount();
 
         }

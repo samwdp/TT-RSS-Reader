@@ -32,16 +32,17 @@ public class SimpleViewController implements MouseListener {
     private ArticleController articleController;
     private ScheduledExecutorService executor;
     private Set<Feed> feedsSet;
+    private String labelTextID;
 
     /**
      * Creates a new view and gets the feeds from the TT-RSS server
      */
-    public SimpleViewController() throws InterruptedException {
+    public SimpleViewController() throws InterruptedException, UnsupportedEncodingException {
         executor = Executors.newSingleThreadScheduledExecutor();
         view = new SimpleView();
         articleController = new ArticleController();
         Constants.feedAmount = 100;
-        updateTask();
+        updateFeeds();
     }
 
     /**
@@ -52,9 +53,18 @@ public class SimpleViewController implements MouseListener {
      */
     public void getFeed() throws UnsupportedEncodingException, InterruptedException {
         view.clearFeedPanel();
-        for (Feed d : feedsSet) {          
+        feedsSet = Constants.api.getFeeds();
+        for (Feed d : feedsSet) {
             System.out.println(d.title);
             view.setFeedText(d.id + " " + d.title, this);
+        }
+    }
+
+    public void getHeadlines() {
+        view.clearHeadlinePanel();
+        for (Article a : articles) {
+            // System.out.println(a.title);
+            view.setHeadlineText(a.title, a.content, articleController);
         }
     }
 
@@ -72,7 +82,7 @@ public class SimpleViewController implements MouseListener {
             JLabel currentLabel = (JLabel) e.getComponent();
             for (Feed f : feedsSet) {
                 String string = currentLabel.getText();
-                String labelTextID = null;
+                labelTextID = null;
                 if (string.contains(" ")) {
                     labelTextID = string.substring(0, string.indexOf(" "));
                     int labelID = Integer.parseInt(labelTextID);
@@ -81,6 +91,7 @@ public class SimpleViewController implements MouseListener {
                             articles = Constants.api.getArticles(labelID, Constants.feedAmount, "all_articles", false, 0,
                                     null, null);
                             Constants.articles = articles;
+                            updateTask();
                             // System.out.println("I am here");
 
                         } catch (UnsupportedEncodingException e1) {
@@ -130,6 +141,26 @@ public class SimpleViewController implements MouseListener {
                 public void run() {
                     try {
                         // Invoke method(s) to do the work
+                        int labelID = Integer.parseInt(labelTextID);
+                        articles = Constants.api.getArticles(labelID, Constants.feedAmount, "all_articles", false, 0,
+                                null, null);
+                        getHeadlines();
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(SimpleViewController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            };
+            System.out.println(Constants.updateArticleTime);
+            executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateArticleTime, TimeUnit.SECONDS);
+        }
+    }
+
+    private void updateFeeds() {
+        if (Constants.isOnline) {
+            Runnable getFeedTask = new Runnable() {
+                public void run() {
+                    try {
+                        // Invoke method(s) to do the work
                         feedsSet = Constants.api.getFeeds();
                         getFeed();
                     } catch (UnsupportedEncodingException ex) {
@@ -139,8 +170,8 @@ public class SimpleViewController implements MouseListener {
                     }
                 }
             };
-            System.out.println(Constants.updateTime);
-            executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateTime, TimeUnit.SECONDS);
+            System.out.println(Constants.updateFeedTime);
+            executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateFeedTime, TimeUnit.SECONDS);
         }
     }
 

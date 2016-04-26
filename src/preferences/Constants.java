@@ -26,7 +26,8 @@ public class Constants {
     public static TTRSSApi api;
     public static int feedAmount = 100;
     public static SimpleViewController simpleView;
-    public static long updateTime = 1;
+    public static long updateArticleTime = 10;
+    public static long updateFeedTime = 10;
     public static boolean isOnline = true;
     public static int fontSize = 10;
 }
