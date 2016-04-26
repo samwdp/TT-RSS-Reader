@@ -15,8 +15,9 @@ import gui.SubscribeView;
  */
 public class SimpleViewSubscribeActionListener implements ActionListener {
 
+    private SubscribeController c;
 	public void actionPerformed(ActionEvent arg0) {
-		SubscribeController c = new SubscribeController();
+		c = new SubscribeController();
 	}
 
 }

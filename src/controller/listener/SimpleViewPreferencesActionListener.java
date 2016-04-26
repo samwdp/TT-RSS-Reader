@@ -15,7 +15,8 @@ import java.awt.event.ActionListener;
  * @author samwdp
  */
 public class SimpleViewPreferencesActionListener implements ActionListener {
+    private PreferencesController c;
     public void actionPerformed(ActionEvent arg0) {
-		PreferencesController c = new PreferencesController();
+		c = new PreferencesController();
 	}
 }

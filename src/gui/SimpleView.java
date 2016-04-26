@@ -74,8 +74,8 @@ public class SimpleView extends JFrame {
         headlinePanel.setLayout(new BoxLayout(headlinePanel, BoxLayout.Y_AXIS));
         feedPanel.setLayout(new BoxLayout(feedPanel, BoxLayout.Y_AXIS));
 
-        subscribe.addActionListener(new SimpleViewSubscribeActionListener());
-        preferences.addActionListener(new SimpleViewPreferencesActionListener());
+        
+        
 
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -182,6 +182,13 @@ public class SimpleView extends JFrame {
      */
     public void clearHeadlinePanel() {
         headlinePanel.removeAll();
+    }
+    
+    public void addSubscribeActionListener(SimpleViewSubscribeActionListener s){
+        subscribe.addActionListener(s);
+    }
+     public void addPreferencesActionListener(SimpleViewPreferencesActionListener s){
+       preferences.addActionListener(s);
     }
 
 }

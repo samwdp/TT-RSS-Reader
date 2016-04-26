@@ -19,12 +19,11 @@ import model.api.TTRSSApi;
  *
  */
 public class ControllerInitialiser {
+    private static LoginController c;
 
 	public static void main(String[] args) throws IOException, JSONException {
 		// TODO Auto-generated method stub
-		LoginController c = new LoginController();
-                //PreferencesView v = new PreferencesView();
-
+		c = new LoginController();
 	}
 
 }

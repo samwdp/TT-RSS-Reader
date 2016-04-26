@@ -30,6 +30,7 @@ public class LoginController implements java.awt.event.ActionListener {
 
     private TTRSSApi loginAPI;
     private LoginScreenView view;
+    private SimpleViewController simpleViewController;
 
     public LoginController() {
         loginAPI = new TTRSSApi();
@@ -55,7 +56,7 @@ public class LoginController implements java.awt.event.ActionListener {
             } else {
                 Constants.api = loginAPI;
                 view.hideDisplay();
-                SimpleViewController simpleViewController = new SimpleViewController();
+                simpleViewController = new SimpleViewController();
             }
             // view2 = new SimpleView();
             // getFeed(view2);

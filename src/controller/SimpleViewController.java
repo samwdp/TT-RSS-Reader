@@ -1,5 +1,7 @@
 package controller;
 
+import controller.listener.SimpleViewPreferencesActionListener;
+import controller.listener.SimpleViewSubscribeActionListener;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -33,6 +35,8 @@ public class SimpleViewController implements MouseListener {
     private ScheduledExecutorService executor;
     private Set<Feed> feedsSet;
     private String labelTextID;
+    private SimpleViewPreferencesActionListener preferencesAction;
+    private SimpleViewSubscribeActionListener subscribeAction;
 
     /**
      * Creates a new view and gets the feeds from the TT-RSS server
@@ -40,6 +44,10 @@ public class SimpleViewController implements MouseListener {
     public SimpleViewController() throws InterruptedException, UnsupportedEncodingException {
         executor = Executors.newSingleThreadScheduledExecutor();
         view = new SimpleView();
+        preferencesAction = new SimpleViewPreferencesActionListener();
+        subscribeAction = new SimpleViewSubscribeActionListener();
+        view.addSubscribeActionListener(subscribeAction);
+        view.addPreferencesActionListener(preferencesAction);
         articleController = new ArticleController();
         Constants.feedAmount = 100;
         updateFeeds();
