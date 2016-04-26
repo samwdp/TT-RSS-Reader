@@ -30,7 +30,7 @@ public class PreferencesController implements ActionListener {
 
         if (b.getText() == "Submit") {
             Constants.updateTime = view.getUpdateFrequency();
-            Constants.fontSize = view.getTextSize();
+            Constants.fontSize = view.getArticleAmount();
 
         }
         if (b.getText() == "Cancel") {

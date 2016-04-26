@@ -15,13 +15,13 @@ import preferences.Constants;
 public class PreferencesView extends JFrame {
 
     private final JPanel inputPanel;
-    private final JPanel textSizeOverallPanel;
-    private final JLabel textSizeInformationLabel;
-    private final JPanel textSizePanel;
-    private final JPanel textSizeLabelPanel;
-    private final JLabel textSizeTextLabel;
-    private final JPanel textSizeInuptPanel;
-    private final JTextField textSizeInput;
+    private final JPanel articleSizeOverallPanel;
+    private final JLabel articleSizeInformationLabel;
+    private final JPanel articleSizePanel;
+    private final JPanel articleSizeLabelPanel;
+    private final JLabel articleSizeTextLabel;
+    private final JPanel articleSizeInuptPanel;
+    private final JTextField articleSizeInput;
     private final JPanel updateFrequencyOverallPanel;
     private final JLabel updateInformationLabel;
     private final JPanel updateInformationPanel;
@@ -44,13 +44,13 @@ public class PreferencesView extends JFrame {
     public PreferencesView() {
 
         inputPanel = new JPanel();
-        textSizeOverallPanel = new JPanel();
-        textSizeInformationLabel = new JLabel("change the value to increase or defrease the size of the text for the program");
-        textSizePanel = new JPanel();
-        textSizeLabelPanel = new JPanel();
-        textSizeTextLabel = new JLabel("Text size");
-        textSizeInuptPanel = new JPanel();
-        textSizeInput = new JTextField(20);
+        articleSizeOverallPanel = new JPanel();
+        articleSizeInformationLabel = new JLabel("Change the value of the amount of articles that you want to display");
+        articleSizePanel = new JPanel();
+        articleSizeLabelPanel = new JPanel();
+        articleSizeTextLabel = new JLabel("Article ammount");
+        articleSizeInuptPanel = new JPanel();
+        articleSizeInput = new JTextField(20);
         updateFrequencyOverallPanel = new JPanel();
         updateInformationLabel = new JLabel("Update time in seconds");
         updateInformationPanel = new JPanel();
@@ -73,7 +73,7 @@ public class PreferencesView extends JFrame {
         //add overall panel
         this.add(inputPanel, BorderLayout.NORTH);
         this.add(submitPanel, BorderLayout.SOUTH);
-        inputPanel.add(textSizeOverallPanel);
+        inputPanel.add(articleSizeOverallPanel);
         inputPanel.add(updateFrequencyOverallPanel);
         inputPanel.add(onlineOverallPanel);
 
@@ -81,15 +81,15 @@ public class PreferencesView extends JFrame {
         submitPanel.add(cancel);
 
         //textsize panel
-        textSizeOverallPanel.add(textSizeInformationLabel);
-        textSizeOverallPanel.add(textSizePanel);
-        textSizePanel.add(textSizeLabelPanel);
-        textSizePanel.add(textSizeInuptPanel);
+        articleSizeOverallPanel.add(articleSizeInformationLabel);
+        articleSizeOverallPanel.add(articleSizePanel);
+        articleSizePanel.add(articleSizeLabelPanel);
+        articleSizePanel.add(articleSizeInuptPanel);
 
         //text size label and input
-        textSizeLabelPanel.add(textSizeTextLabel);
-        textSizeInuptPanel.add(textSizeInput);
-        textSizeInput.setText(Integer.toString(Constants.fontSize));
+        articleSizeLabelPanel.add(articleSizeTextLabel);
+        articleSizeInuptPanel.add(articleSizeInput);
+        articleSizeInput.setText(Integer.toString(Constants.feedAmount));
 
         //update frequency panel
         updateFrequencyOverallPanel.add(updateInformationLabel);
@@ -115,10 +115,10 @@ public class PreferencesView extends JFrame {
 
         //SET LAYOUTS
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        textSizeOverallPanel.setLayout(new BoxLayout(textSizeOverallPanel, BoxLayout.Y_AXIS));
+        articleSizeOverallPanel.setLayout(new BoxLayout(articleSizeOverallPanel, BoxLayout.Y_AXIS));
         updateFrequencyOverallPanel.setLayout(new BoxLayout(updateFrequencyOverallPanel, BoxLayout.Y_AXIS));
         onlineOverallPanel.setLayout(new BoxLayout(onlineOverallPanel, BoxLayout.Y_AXIS));
-        textSizePanel.setLayout(new BoxLayout(textSizePanel, BoxLayout.X_AXIS));
+        articleSizePanel.setLayout(new BoxLayout(articleSizePanel, BoxLayout.X_AXIS));
         updateInformationPanel.setLayout(new BoxLayout(updateInformationPanel, BoxLayout.X_AXIS));
         onlinePanel.setLayout(new BoxLayout(onlinePanel, BoxLayout.X_AXIS));
 
@@ -135,8 +135,8 @@ public class PreferencesView extends JFrame {
      *
      * @return i: integer
      */
-    public int getTextSize() {
-        int i = Integer.parseInt(textSizeInput.getText());
+    public int getArticleAmount() {
+        int i = Integer.parseInt(articleSizeInput.getText());
         return i;
     }
 
@@ -146,7 +146,15 @@ public class PreferencesView extends JFrame {
      * @return i : float
      */
     public long getUpdateFrequency() {
-        long i = Long.parseLong(updateFrequencyInput.getText());
+        long i = 0;
+        String string = updateFrequencyInput.getText();
+        String labelTextID = null;
+        if (string.contains(".")) {
+            labelTextID = string.substring(0,1);
+            System.out.println(labelTextID);
+            int ints = Integer.parseInt(labelTextID);
+            i = (long) ints;
+        }
         return i;
     }
 

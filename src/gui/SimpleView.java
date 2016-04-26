@@ -19,6 +19,7 @@ import controller.ArticleController;
 import controller.SimpleViewController;
 import controller.listener.SimpleViewPreferencesActionListener;
 import controller.listener.SimpleViewSubscribeActionListener;
+import java.awt.Font;
 import preferences.Constants;
 
 /**
@@ -59,7 +60,7 @@ public class SimpleView extends JFrame {
         //frame
         this.add(headlineScrollPane, BorderLayout.CENTER);
         this.add(westPanel, BorderLayout.WEST);
-        
+
         //westpanel
         westPanel.add(feedScrollPanel);
         westPanel.add(btnPanel);
@@ -67,7 +68,7 @@ public class SimpleView extends JFrame {
         //btn panel
         btnPanel.add(subscribe);
         btnPanel.add(preferences);
-        
+
         //layouts
         westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
         headlinePanel.setLayout(new BoxLayout(headlinePanel, BoxLayout.Y_AXIS));
@@ -119,6 +120,10 @@ public class SimpleView extends JFrame {
         addArticleController(controller);
         headlinePanel.add(articlePanel);
         articlePanel.setLayout(new BoxLayout(articlePanel, BoxLayout.Y_AXIS));
+        Font font = headlineLabel.getFont();
+// same font but bold
+        Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+        headlineLabel.setFont(boldFont);
         articlePanel.add(headlineLabel, BorderLayout.NORTH);
         articlePanel.add(contentLabel, BorderLayout.SOUTH);
 
@@ -172,7 +177,7 @@ public class SimpleView extends JFrame {
         feedPanel.removeAll();
     }
 
-     /**
+    /**
      * used by the controller to clear the headline panel
      */
     public void clearHeadlinePanel() {
