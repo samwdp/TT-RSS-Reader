@@ -44,8 +44,6 @@ import model.Label;
  */
 public class TTRSSApi extends JSONObject {
 
-    private static final String TAG = TTRSSApi.class.getSimpleName();
-
     protected static String lastError = "";
     protected static boolean hasLastError = false;
 
@@ -56,47 +54,26 @@ public class TTRSSApi extends JSONObject {
     private static final String PARAM_CATEGORY_ID = "category_id";
     private static final String PARAM_FEED_ID = "feed_id";
     private static final String PARAM_FEED_URL = "feed_url";
-    private static final String PARAM_ARTICLE_IDS = "article_ids";
     private static final String PARAM_LIMIT = "limit";
     private static final int PARAM_LIMIT_API_5 = 60;
     private static final String PARAM_VIEWMODE = "view_mode";
     private static final String PARAM_SHOW_CONTENT = "show_content";
-    // include_attachments available since 1.5.3 but is ignored on older
-    // versions
     private static final String PARAM_INC_ATTACHMENTS = "include_attachments";
     private static final String PARAM_SINCE_ID = "since_id";
     private static final String PARAM_SEARCH = "search";
     private static final String PARAM_SKIP = "skip";
-    private static final String PARAM_MODE = "mode";
-    // 0-starred, 1-published, 2-unread, 3-article note (since api level 1)
-    private static final String PARAM_FIELD = "field";
-    // optional data parameter when setting note field
-    private static final String PARAM_DATA = "data";
     private static final String PARAM_IS_CAT = "is_cat";
-    private static final String PARAM_PREF = "pref_name";
 
     private static final String VALUE_LOGIN = "login";
     private static final String VALUE_GET_CATEGORIES = "getCategories";
     private static final String VALUE_GET_FEEDS = "getFeeds";
     private static final String VALUE_GET_HEADLINES = "getHeadlines";
-    private static final String VALUE_UPDATE_ARTICLE = "updateArticle";
-    private static final String VALUE_CATCHUP = "catchupFeed";
-    private static final String VALUE_UPDATE_FEED = "updateFeed";
-    private static final String VALUE_GET_PREF = "getPref";
-    private static final String VALUE_SET_LABELS = "setArticleLabel";
-    private static final String VALUE_SHARE_TO_PUBLISHED = "shareToPublished";
     private static final String VALUE_FEED_SUBSCRIBE = "subscribeToFeed";
     private static final String VALUE_FEED_UNSUBSCRIBE = "unsubscribeFeed";
 
-    private static final String VALUE_LABEL_ID = "label_id";
-    private static final String VALUE_ASSIGN = "assign";
 
-    private static final String ERROR = "error";
-    private static final String LOGIN_ERROR = "LOGIN_ERROR";
     private static final String NOT_LOGGED_IN = "NOT_LOGGED_IN";
     private static final String UNKNOWN_METHOD = "UNKNOWN_METHOD";
-    private static final String API_DISABLED = "API_DISABLED";
-    private static final String INCORRECT_USAGE = "INCORRECT_USAGE";
 
     private static final String STATUS = "status";
     private static final String API_LEVEL = "api_level";
@@ -110,23 +87,16 @@ public class TTRSSApi extends JSONObject {
 
     private static final String CAT_ID = "cat_id";
 
-    private static final String CONTENT = "content";
-
-    private static final String URL_SHARE = "url";
     private static final String FEED_URL = "feed_url";
 
     private static final String CONTENT_URL = "content_url";
 
     private static final String VALUE = "value";
 
-    private static final int MAX_ID_LIST_LENGTH = 100;
-
     // session id as an IN parameter
     protected static final String SID = "sid";
 
     protected boolean httpAuth = false;
-    protected String httpUsername;
-    protected String httpPassword;
     protected String base64NameAndPw = null;
 
     protected String sessionId = null;
@@ -874,16 +844,6 @@ public class TTRSSApi extends JSONObject {
         return ret;
     }
 
-    private boolean serverWork(Integer feedId) throws UnsupportedEncodingException {
-        if (Constants.isOnline) {
-            Map<String, String> taskParams = new HashMap<>();
-            taskParams.put(PARAM_OP, VALUE_UPDATE_FEED);
-            taskParams.put(PARAM_FEED_ID, String.valueOf(feedId));
-            return doRequestNoAnswer(taskParams);
-        }
-        return true;
-    }
-
     private long noTaskUntil = 0;
 
     /**
@@ -911,8 +871,6 @@ public class TTRSSApi extends JSONObject {
         if (sessionNotAlive()) {
             return;
         }
-
-        serverWork(id);
 
         int limitParam = Math.min((apiLevel < 6) ? PARAM_LIMIT_API_5 : PARAM_LIMIT_MAX_VALUE, limit);
 
@@ -1022,131 +980,6 @@ public class TTRSSApi extends JSONObject {
     }
 
     /**
-     * Marks the given Article as "starred"/"not starred" depending on int
-     * articleState.
-     *
-     * @param ids a list of article-ids.
-     * @param articleState the new state of the article (0 - not starred; 1 -
-     * starred; 2 - toggle).
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean setArticleStarred(Set<Integer> ids, int articleState) throws UnsupportedEncodingException {
-        boolean ret = true;
-        if (ids.size() == 0) {
-            return true;
-        }
-
-        for (String idList : StringSupport.convertListToString(ids, MAX_ID_LIST_LENGTH)) {
-            Map<String, String> params = new HashMap<>();
-            params.put(PARAM_OP, VALUE_UPDATE_ARTICLE);
-            params.put(PARAM_ARTICLE_IDS, idList);
-            params.put(PARAM_MODE, articleState + "");
-            params.put(PARAM_FIELD, "0");
-            ret = ret && doRequestNoAnswer(params);
-        }
-        return ret;
-    }
-
-    /**
-     * Marks a feed or a category with all its feeds as read.
-     *
-     * @param id the feed-id/category-id.
-     * @param isCategory indicates whether id refers to a feed or a category.
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean setRead(int id, boolean isCategory) throws UnsupportedEncodingException {
-        Map<String, String> params = new HashMap<>();
-        params.put(PARAM_OP, VALUE_CATCHUP);
-        params.put(PARAM_FEED_ID, id + "");
-        params.put(PARAM_IS_CAT, (isCategory ? "1" : "0"));
-        return doRequestNoAnswer(params);
-    }
-
-    /**
-     * Marks the given Articles as "published"/"not published" depending on
-     * articleState.
-     *
-     * @param ids a list of article-ids.
-     * @param articleState the new state of the articles (0 - not published; 1 -
-     * published; 2 - toggle).
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean setArticlePublished(Set<Integer> ids, int articleState) throws UnsupportedEncodingException {
-        if (ids.size() == 0) {
-            return true;
-        }
-        boolean ret = true;
-        for (String idList : StringSupport.convertListToString(ids, MAX_ID_LIST_LENGTH)) {
-            Map<String, String> params = new HashMap<>();
-            params.put(PARAM_OP, VALUE_UPDATE_ARTICLE);
-            params.put(PARAM_ARTICLE_IDS, idList);
-            params.put(PARAM_MODE, articleState + "");
-            params.put(PARAM_FIELD, "1");
-            ret = ret && doRequestNoAnswer(params);
-        }
-        return ret;
-    }
-
-    /**
-     * Adds a note to the given articles
-     *
-     * @param ids a list of article-id's with corresponding notes (may be null).
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean setArticleNote(Map<Integer, String> ids) throws UnsupportedEncodingException {
-        if (ids.size() == 0) {
-            return true;
-        }
-        boolean ret = true;
-        for (Integer id : ids.keySet()) {
-            String note = ids.get(id);
-            if (note == null) {
-                continue;
-            }
-
-            Map<String, String> params = new HashMap<>();
-            params.put(PARAM_OP, VALUE_UPDATE_ARTICLE);
-            params.put(PARAM_ARTICLE_IDS, id + "");
-            params.put(PARAM_FIELD, "3"); // Field 3 is the "Add note" field
-            params.put(PARAM_DATA, note);
-            ret = ret && doRequestNoAnswer(params);
-        }
-        return ret;
-    }
-
-    /**
-     * Sets the article label
-     *
-     * @param articleIds: Set
-     * @param labelId: int
-     * @param assign: boolean
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean setArticleLabel(Set<Integer> articleIds, int labelId, boolean assign)
-            throws UnsupportedEncodingException {
-        boolean ret = true;
-        if (articleIds.size() == 0) {
-            return true;
-        }
-
-        for (String idList : StringSupport.convertListToString(articleIds, MAX_ID_LIST_LENGTH)) {
-            Map<String, String> params = new HashMap<>();
-            params.put(PARAM_OP, VALUE_SET_LABELS);
-            params.put(PARAM_ARTICLE_IDS, idList);
-            params.put(VALUE_LABEL_ID, labelId + "");
-            params.put(VALUE_ASSIGN, (assign ? "1" : "0"));
-            ret = ret && doRequestNoAnswer(params);
-        }
-
-        return ret;
-    }
-
-    /**
      * Unsubscribe's from a feed
      *
      * @param feed_id: int
@@ -1160,21 +993,5 @@ public class TTRSSApi extends JSONObject {
         return doRequestNoAnswer(params);
     }
 
-    /**
-     * Creates an article with specified data in the Published feed
-     *
-     * @param title: String
-     * @param url: String
-     * @param content: String
-     * @return true if the operation succeeded.
-     * @throws UnsupportedEncodingException if nothing works
-     */
-    public boolean shareToPublished(String title, String url, String content) throws UnsupportedEncodingException {
-        Map<String, String> params = new HashMap<>();
-        params.put(PARAM_OP, VALUE_SHARE_TO_PUBLISHED);
-        params.put(TITLE, title);
-        params.put(URL_SHARE, url);
-        params.put(CONTENT, content);
-        return doRequestNoAnswer(params);
-    }
+    
 }

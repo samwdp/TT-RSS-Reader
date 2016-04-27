@@ -44,6 +44,7 @@ public class SimpleViewController implements MouseListener {
     public SimpleViewController() throws InterruptedException, UnsupportedEncodingException {
         executor = Executors.newSingleThreadScheduledExecutor();
         view = new SimpleView();
+        Constants.simpleView = this;
         preferencesAction = new SimpleViewPreferencesActionListener();
         subscribeAction = new SimpleViewSubscribeActionListener();
         view.addSubscribeActionListener(subscribeAction);
@@ -150,6 +151,7 @@ public class SimpleViewController implements MouseListener {
                     try {
                         // Invoke method(s) to do the work
                         int labelID = Integer.parseInt(labelTextID);
+                        System.out.println(labelID);
                         articles = Constants.api.getArticles(labelID, Constants.feedAmount, "all_articles", false, 0,
                                 null, null);
                         getHeadlines();
@@ -158,7 +160,6 @@ public class SimpleViewController implements MouseListener {
                     }
                 }
             };
-            System.out.println(Constants.updateArticleTime);
             executor.scheduleAtFixedRate(getFeedTask, 0, Constants.updateArticleTime, TimeUnit.SECONDS);
         }
     }
