@@ -150,7 +150,7 @@ public class PreferencesView extends JFrame {
         String string = updateFrequencyInput.getText();
         String labelTextID = null;
         if (string.contains(".")) {
-            labelTextID = string.substring(0,1);
+            labelTextID = string.substring(0,string.length()-2);
             System.out.println(labelTextID);
             int ints = Integer.parseInt(labelTextID);
             i = (long) ints;

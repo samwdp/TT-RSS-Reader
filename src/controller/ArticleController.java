@@ -40,7 +40,7 @@ public class ArticleController implements MouseListener {
         System.out.println(currentLabel.getText());
         for (Article a : Constants.articles) {
             System.out.println(a.title);
-            if (currentLabel.getText() .equals( a.title)) {
+            if (currentLabel.getText().equals(a.title)) {
                 String s = a.url;
                 System.out.println(a.url);
                 try {

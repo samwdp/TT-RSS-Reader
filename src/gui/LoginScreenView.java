@@ -81,7 +81,7 @@ public class LoginScreenView extends JFrame {
 	 * @return s: String
 	 */
 	public String getPassword() {
-		String s = passwordText.getText();
+		String s = String.valueOf(passwordText.getPassword());
 		return s;
 	}
 
